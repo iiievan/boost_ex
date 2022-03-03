@@ -1,18 +1,19 @@
 #include <iostream>
 #include <boost/asio.hpp>
-#include <boost/date_time/posix_time/posix_time.hpp>
+//#include <boost/asio/ip/tcp.hpp>
+
+namespace ba = boost::asio;
 
 int main()
 {
-  boost::asio::io_service io;
+  ba::io_service service;
 
-  boost::asio::deadline_timer t(io, boost::posix_time::seconds(10));
+  ba::ip::tcp::endpoint ep(ba::ip::address::from_string("127.0.0.1"), 2001);
+  ba::ip::tcp::socket 	sock(service);
+  std::cout << "start connection.." << std::endl;
+  sock.connect(ep);
 
-  std::cout << "timer start." << std::endl;
-
-  t.wait();
-
-  std::cout << "timer end." << std::endl;
+  std::cout << "end connection" << std::endl;
 
   return 0;
 }
