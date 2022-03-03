@@ -1,0 +1,9 @@
+boost_ex
+.cproject
+.project
+.buildpath
+.settings/org.eclipse.cdt.codan.core.prefs  
+.settings/org.eclipse.core.resources.prefs   
+.settings/org.eclipse.core.runtime.prefs   
+.settings/org.eclipse.cdt.core.prefs
+.settings/language.settings.xml
