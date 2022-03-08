@@ -1,22 +1,23 @@
+CC     	 = g++
+CFLAGS   = -g -Wall #-O2
+CPPFLAGS = -c -std=c++0x
+LIBS   	 = -pthread -lboost_system
 
-SRCS = main.cpp
+# Where the header are (no need to modify this)
+INCLUDE = src
 
-OBJS = $(SRCS:.cpp =.o)
+EXEC     = boost_app
+#SUBDIRS  = $(wildcard */)
+SUBDIRS  = $(wildcard src/)
+SOURCES  = $(wildcard $(addsuffix *.cpp,$(SUBDIRS)))
+OBJECTS  = $(patsubst %.cpp,%.o,$(SOURCES))
 
-TARGET = boost_ex 
+$(EXEC): $(OBJECTS) 
+	$(CC) $(OBJECTS) $(CFLAGS) $(LIBS) -o $(EXEC)
 
-CC = g++
-
-CXXFLAGS = std=c++0x -g -Wall
-
-all: $(TARGET)
-
-$(TARGET): 	$(OBJS) # This line will compile to .o every .cpp which need to be (which have been modified)
-			$(CC) -o $(TARGET) $(OBJS) # Linking (no need to CXXFLAGS here, it's used when compiling on previous line
-
-main.o : 	$(SRCS)/main.cpp
-			$(CC) $(CXXFLAGS) -c -o $@ $^
+%.o: %.cpp
+	$(CC) $(CFLAGS) $(DFLAGS) $(CPPFLAGS) -I $(INCLUDE) $< -o $@
 
 .PHONY : clean
-clean :
-	rm $(TARGET) $(OBJ)
+clean:
+	rm -f $(EXEC) $(OBJECTS)
