@@ -1,37 +1,46 @@
 #include <iostream>
 #include <boost/asio.hpp>
 #include <utils.h>
-
-using namespace boost;
+#include <client.h>
 
 int main(int argc, char* argv[])
 {
-    if (argc != 3)
+    if (argc != 4)
     {
-        std::cout << "Wrong parameters\n" << "Example usage 192.168.0.1 2001" << std::endl;
+        std::cout << "Wrong parameters\n" << "Example usage  ./client 192.168.0.94 2009 hello" << std::endl;
+        return -1;
     }
 
-    auto const address = asio::ip::make_address(argv[1]);
-    auto const port = std::atoi(argv[2]);
+    std::string const address(argv[1]);
+    unsigned short const port = std::atoi(argv[2]);
+    std::string msg = argv[3];
+    msg = msg + '\n';
 
-    asio::io_service ios;
-    system::error_code ec;
-    asio::ip::tcp::acceptor acc(ios, asio::ip::tcp::endpoint(address, port));
-    asio::ip::tcp::socket sock(ios);
-    asio::streambuf buf;
+    boost::asio::ip::tcp::endpoint ep = Client::create_endpoint(address, port);
+    boost::asio::io_service io;
+    boost::asio::ip::tcp::socket sock(io);
+    boost::system::error_code ec;
 
-    acc.accept(sock);
+    sock.connect(ep, ec);
 
-    asio::read_until(sock, buf, "\n", ec);
+    BOOST_ERROR_PROCESSING(ec);
+
+    boost::asio::write(sock, boost::asio::buffer(msg), ec);
 
     BOOST_ERROR_PROCESSING(ec);
 
-    std::string data = asio::buffer_cast<const char*>(buf.data());
-    std::cout << data << std::endl;
+    boost::asio::streambuf receive_buffer;
+    boost::asio::read(sock,receive_buffer,boost::asio::transfer_all(), ec);
 
-    asio::write(sock, asio::buffer(data), ec);
-
-    BOOST_ERROR_PROCESSING(ec);
+    if(ec && ec != boost::asio::error::eof)
+    {
+        std::cout<< "receive failed " << ec.message() << std::endl;
+    }
+    else
+    {
+        const char * data = boost::asio::buffer_cast<const char *>(receive_buffer.data());
+        std::cout << data << std::endl;
+    }
 
     return 0;
 }
