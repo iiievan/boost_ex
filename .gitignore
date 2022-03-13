@@ -7,3 +7,5 @@ boost_ex
 .settings/org.eclipse.core.runtime.prefs   
 .settings/org.eclipse.cdt.core.prefs
 .settings/language.settings.xml
+
+boost_app

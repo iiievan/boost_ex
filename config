@@ -1,0 +1,8 @@
+# File: config file
+CONFIG_SW_SERVER               = y
+#CONFIG_SW_CLIENT  is not set
+CONFIG_IP                      = "192.168.0.94"
+CONFIG_PORT                    = 2009
+CONFIG_CHAT_SERVER             = y
+#CONFIG_WEB_SERVER   is not set
+#CONFIG_EMAIL_SERVER is not set

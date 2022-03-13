@@ -1,15 +1,20 @@
 #include <iostream>
 #include <boost/asio.hpp>
-#include <utils.h>
-#include <client.h>
+#include "utils.h"
+#include "client.h"
+#include "parcer.h"
+
+appConfig_t app_configuration;
 
 int main(int argc, char* argv[])
 {
+    parse_config_file("config", app_configuration);
+
     if (argc != 4)
     {
         std::cout << "Wrong parameters\n" << "Example usage  ./client 192.168.0.94 2009 hello" << std::endl;
         return -1;
-    }
+    }    
 
     std::string const address(argv[1]);
     unsigned short const port = std::atoi(argv[2]);
