@@ -4,17 +4,27 @@
 #include "client.h"
 #include "parcer.h"
 
-appConfig_t app_configuration;
-
 int main(int argc, char* argv[])
 {
-    parse_config_file("config", app_configuration);
+    appConfig app_configuration("config");
 
-    if (argc != 4)
+    switch(app_configuration.sw_type)
     {
-        std::cout << "Wrong parameters\n" << "Example usage  ./client 192.168.0.94 2009 hello" << std::endl;
-        return -1;
-    }    
+        case SERVER:
+            std::cout << "Server started at ";
+            app_configuration.print_IPv4();
+            std::cout << "." << std::endl;
+            break;
+        case CLIENT:
+            std::cout << "Client started at ";
+            app_configuration.print_IPv4();
+            std::cout << "." << std::endl;
+            break;
+        default:
+            std::cout << "Error:Wrong config file parameters.\n"; 
+            return -1;
+            break;
+    }  
 
     std::string const address(argv[1]);
     unsigned short const port = std::atoi(argv[2]);

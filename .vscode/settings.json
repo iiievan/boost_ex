@@ -71,6 +71,7 @@
         "typeinfo": "cpp",
         "variant": "cpp",
         "*.ipp": "cpp",
-        "fstream": "cpp"
+        "fstream": "cpp",
+        "slist": "cpp"
     }
 }

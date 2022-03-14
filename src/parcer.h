@@ -8,16 +8,18 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include "boost/assign.hpp"
 
 enum e_swType : unsigned int
 {    
-    SW_NA = 0,
-    SW_SERVER,
-    SW_CLIENT
+    NA = 0,
+    SERVER,
+    CLIENT
 };
 
 enum e_appPurpose : unsigned int
 {
+    APP_NA,
     APP_CHAT_SERVER,
     APP_WEB_SERVER,
     APP_EMAIL_SERVER,
@@ -26,26 +28,35 @@ enum e_appPurpose : unsigned int
 
 enum e_config : unsigned int
 {
-    CONFIG_SW_SERVER,               
-    CONFIG_SW_CLIENT,  
-    CONFIG_IP,                      
-    CONFIG_PORT,                    
-    CONFIG_CHAT_SERVER,             
-    CONFIG_WEB_SERVER,   
-    CONFIG_EMAIL_SERVER,
-    CONFIG_CRYPTOCURRENCY
+    SW_SERVER,               
+    SW_CLIENT,  
+    IP,                      
+    PORT,                    
+    CHAT_SERVER,             
+    WEB_SERVER,   
+    EMAIL_SERVER,
+    CRYPTOCURRENCY
 }; 
 
-typedef struct
+class appConfig
 {
-          e_swType sw_type;
-    unsigned  char ipv4[4];
-    unsigned short ipv6[8];
-    unsigned short port;
-      e_appPurpose app_purpose;
-}appConfig_t;
+public:
+        appConfig(const char* fname);  // parsing input config file
 
-void parse_config_file(const char* fname, appConfig_t &pConfig);
-void fill_application_config(std::pair <std::string,std::string> &pair, appConfig_t &pConfig);
+   void fill_config(std::pair<std::string,std::string> &pair);
+   void print_IPv4();
+   void print_IPv6();
+
+          e_swType sw_type     = NA;
+    unsigned  char ipv4[4]     = {127,0,0,1};
+    unsigned short ipv6[8]     = {0};
+    unsigned short port        =  0xffff;
+      e_appPurpose app_purpose = APP_NA;
+
+private:
+std::map<std::string, e_config> _configMap; // for switch case while parsing
+};
+
+
 
 #endif

@@ -9,3 +9,5 @@ boost_ex
 .settings/language.settings.xml
 
 boost_app
+
+*.o

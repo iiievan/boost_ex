@@ -1,7 +1,15 @@
 #include "parcer.h"
 
-void parse_config_file(const char* fname, appConfig_t &pConfig)
+appConfig::appConfig(const char* fname)
 {
+    _configMap = boost::assign::map_list_of("CONFIG_SW_SERVER",     SW_SERVER)
+                                           ("CONFIG_SW_CLIENT",     SW_CLIENT)
+                                           ("CONFIG_IP",            IP)
+                                           ("CONFIG_PORT",          PORT)
+                                           ("CONFIG_CHAT_SERVER",   CHAT_SERVER)
+                                           ("CONFIG_WEB_SERVER",    WEB_SERVER)
+                                           ("CONFIG_EMAIL_SERVER",  EMAIL_SERVER)
+                                           ("CONFIG_CRYPTOCURRENCY",CRYPTOCURRENCY);
     std::ifstream cFile(fname);
 
     if (cFile.is_open())
@@ -16,12 +24,11 @@ void parse_config_file(const char* fname, appConfig_t &pConfig)
             {  continue; }
 
             auto delimiterPos = line.find("=");
-            std::string key   = line.substr(0, delimiterPos);
-            std::string value = line.substr(delimiterPos + 1);
 
-            std::pair <std::string,std::string> parce_pair = std::make_pair(key,value);
+            std::pair <std::string,std::string> parce_pair = std::make_pair(line.substr(0, delimiterPos),
+                                                                            line.substr(delimiterPos + 1));
 
-            fill_application_config(parce_pair, pConfig);
+            fill_config(parce_pair);
         }        
     }
     else
@@ -29,23 +36,21 @@ void parse_config_file(const char* fname, appConfig_t &pConfig)
 
 }
 
-void fill_application_config(std::pair <std::string,std::string> &pair, appConfig_t &pConfig)
+void appConfig::fill_config(std::pair <std::string,std::string> &pair)
 {
-    static std::map<std::string, e_config> s_configMap;
-
     std::istringstream iss(pair.second);
     std::vector<std::string> tokens;
     std::string token;
 
-    switch(s_configMap[pair.first])
+    switch(_configMap[pair.first])
     {
-        case CONFIG_SW_SERVER: 
-            pConfig.sw_type = SW_SERVER;       
+        case SW_SERVER: 
+            sw_type = SERVER;       
             break;  
-        case CONFIG_SW_CLIENT: 
-            pConfig.sw_type = SW_CLIENT;        
+        case SW_CLIENT: 
+            sw_type = CLIENT;        
             break; 
-        case CONFIG_IP:
+        case IP:
             //ipv4   
             if(pair.second[3] == '.') 
             {
@@ -68,38 +73,82 @@ void fill_application_config(std::pair <std::string,std::string> &pair, appConfi
             if(tokens.size() == 4)
             {
                 for(unsigned j = 0; j < 4; j++)
-                    pConfig.ipv4[j] = std::stoi(tokens[j]);
+                    ipv4[j] = std::stoi(tokens[j]);
             }
             else
             if(tokens.size() > 4)
             {
                 for(unsigned j = 0; j < tokens.size(); j++)
-                    pConfig.ipv6[j] = std::stoi(tokens[j]);  
+                    ipv6[j] = std::stoul(tokens[j],nullptr, 16);  
             }
             else
             { std::cerr << "Invalid IP number.\n"; }
 
             break; 
-        case CONFIG_PORT: 
-            pConfig.port  =  std::stoi(pair.second);    
+        case PORT: 
+            port  =  std::stoi(pair.second);    
             break; 
-        case CONFIG_CHAT_SERVER:  
+        case CHAT_SERVER:  
             if(pair.second[0] == 'y') 
-                pConfig.app_purpose = APP_CHAT_SERVER;     
+                app_purpose = APP_CHAT_SERVER;     
             break; 
-        case CONFIG_WEB_SERVER: 
+        case WEB_SERVER: 
             if(pair.second[0] == 'y') 
-                pConfig.app_purpose = APP_CHAT_SERVER;          
+                app_purpose = APP_CHAT_SERVER;          
             break;
-        case CONFIG_EMAIL_SERVER:    
+        case EMAIL_SERVER:    
             if(pair.second[0] == 'y') 
-                pConfig.app_purpose = APP_CHAT_SERVER;    
+                app_purpose = APP_CHAT_SERVER;    
             break; 
-        case CONFIG_CRYPTOCURRENCY:    
+        case CRYPTOCURRENCY:    
             if(pair.second[0] == 'y') 
-                pConfig.app_purpose = APP_CRYPTOCURRENCY;    
+                app_purpose = APP_CRYPTOCURRENCY;    
             break; 
         default:
             break;     
     }
+}
+
+void appConfig::print_IPv4()
+{
+    for(unsigned i = 0; i < 4; i++)
+    {
+        std::cout << (int)ipv4[i];
+
+        if(i < 3)
+            std::cout << ".";
+    }
+
+    if(port != 0xffff)
+        std::cout << ":" << (int)port;
+}
+
+void appConfig::print_IPv6()
+{
+    bool leading_zeroes = false;
+    std::cout << "[";
+    for(unsigned i = 0; i < 8; i++)
+    {
+        if(ipv6[i] == 0)
+        {
+            std::cout << "";
+            leading_zeroes = true;
+        }
+        else
+        {
+            if(leading_zeroes)
+            {
+                std::cout << ":";
+                leading_zeroes = false;
+            }
+            std::cout << std::hex << ipv6[i];
+        }            
+
+        if(i < 7 && !leading_zeroes)
+            std::cout << ":";
+    }
+    std::cout << "]";
+
+    if(port != 0xffff)
+        std::cout << ":" << (int)port;
 }
