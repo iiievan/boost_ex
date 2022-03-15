@@ -2,22 +2,23 @@
 #include <boost/asio.hpp>
 #include "utils.h"
 #include "client.h"
+#include "server.h"
 #include "parcer.h"
 
 int main(int argc, char* argv[])
 {
-    appConfig app_configuration("config");
+    appConfig app_cfg("config");
 
-    switch(app_configuration.sw_type)
+    switch(app_cfg.sw_type)
     {
         case SERVER:
             std::cout << "Server started at ";
-            app_configuration.print_IPv4();
+            app_cfg.print_IPv6();
             std::cout << "." << std::endl;
             break;
         case CLIENT:
             std::cout << "Client started at ";
-            app_configuration.print_IPv4();
+            app_cfg.print_IPv4();
             std::cout << "." << std::endl;
             break;
         default:
@@ -26,35 +27,17 @@ int main(int argc, char* argv[])
             break;
     }  
 
-    std::string const address(argv[1]);
-    unsigned short const port = std::atoi(argv[2]);
-    std::string msg = argv[3];
-    msg = msg + '\n';
-
-    boost::asio::ip::tcp::endpoint ep = Client::create_endpoint(address, port);
-    boost::asio::io_service io;
-    boost::asio::ip::tcp::socket sock(io);
-    boost::system::error_code ec;
-
-    sock.connect(ep, ec);
-
-    BOOST_ERROR_PROCESSING(ec);
-
-    boost::asio::write(sock, boost::asio::buffer(msg), ec);
-
-    BOOST_ERROR_PROCESSING(ec);
-
-    boost::asio::streambuf receive_buffer;
-    boost::asio::read(sock,receive_buffer,boost::asio::transfer_all(), ec);
-
-    if(ec && ec != boost::asio::error::eof)
+    switch (app_cfg.sw_type)
     {
-        std::cout<< "receive failed " << ec.message() << std::endl;
-    }
-    else
-    {
-        const char * data = boost::asio::buffer_cast<const char *>(receive_buffer.data());
-        std::cout << data << std::endl;
+        case SERVER:
+            Server::create_endpoint(app_cfg.port);
+            break;
+        case CLIENT:
+            Client::create_endpoint(app_cfg.get_IPv4(), app_cfg.port );
+            break;
+        case NA:
+        default:
+            break;
     }
 
     return 0;

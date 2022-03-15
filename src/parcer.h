@@ -9,6 +9,7 @@
 #include <sstream>
 #include <vector>
 #include "boost/assign.hpp"
+#include "utils.h"
 
 enum e_swType : unsigned int
 {    
@@ -44,8 +45,12 @@ public:
         appConfig(const char* fname);  // parsing input config file
 
    void fill_config(std::pair<std::string,std::string> &pair);
-   void print_IPv4();
-   void print_IPv6();
+   bool IPv6_fromString(const std::string &str);
+   bool IPv4_fromString(const std::string &str);
+   void print_IPv4() const;
+   void print_IPv6() const;
+
+   std::string get_IPv4();
 
           e_swType sw_type     = NA;
     unsigned  char ipv4[4]     = {127,0,0,1};
