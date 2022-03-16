@@ -11,6 +11,13 @@
 #include "boost/assign.hpp"
 #include "utils.h"
 
+enum e_ipVersion : unsigned int
+{
+    IP_NA,               
+    IP_v4,  
+    IP_v6 
+}; 
+
 enum e_swType : unsigned int
 {    
     NA = 0,
