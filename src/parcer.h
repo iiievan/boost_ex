@@ -8,7 +8,8 @@
 #include <string>
 #include <sstream>
 #include <vector>
-#include "boost/assign.hpp"
+#include <boost/assign.hpp>
+#include <boost/asio.hpp>
 #include "utils.h"
 
 enum e_ipVersion : unsigned int
@@ -51,19 +52,15 @@ class appConfig
 public:
         appConfig(const char* fname);  // parsing input config file
 
-   void fill_config(std::pair<std::string,std::string> &pair);
-   bool IPv6_fromString(const std::string &str);
-   bool IPv4_fromString(const std::string &str);
-   void print_IPv4() const;
-   void print_IPv6() const;
+   int fill_config(std::pair<std::string,std::string> &pair);
+  void print_IP();
+  void print_Port();
+  void print_IPandPort();
 
-   std::string get_IPv4();
-
-          e_swType sw_type     = NA;
-    unsigned  char ipv4[4]     = {127,0,0,1};
-    unsigned short ipv6[8]     = {0};
-    unsigned short port        =  0xffff;
-      e_appPurpose app_purpose = APP_NA;
+                e_swType sw_type     = NA;
+boost::asio::ip::address ip;
+          unsigned short port        =  65535;
+            e_appPurpose app_purpose = APP_NA;
 
 private:
 std::map<std::string, e_config> _configMap; // for switch case while parsing

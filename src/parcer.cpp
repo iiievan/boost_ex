@@ -36,9 +36,9 @@ appConfig::appConfig(const char* fname)
 
 }
 
-void appConfig::fill_config(std::pair <std::string,std::string> &pair)
+int appConfig::fill_config(std::pair <std::string,std::string> &pair)
 {
-    e_ipVersion ip_version;
+    boost::system::error_code ec;
 
     switch(_configMap[pair.first])
     {
@@ -51,21 +51,14 @@ void appConfig::fill_config(std::pair <std::string,std::string> &pair)
             break; 
 
         case IP:
-            ip_version = recognize_ip_version(pair.second);
+            ip = boost::asio::ip::address::from_string(pair.second);
 
-            switch (ip_version)
+            if (ec.value() != 0) 
             {
-                case IP_v4:
-                    IPv4_fromString(pair.second);
-                    break;
-                case IP_v6:
-                    IPv6_fromString(pair.second);
-                    break;
-                case IP_NA:
-                default:
-                    std::cerr << "Invalid IP number.\n"; 
-                    break;
-            }            
+                std::cout << "Failed to parse the IP address. Error code = "
+                << ec.value() << ". Message: " << ec.message();
+                return ec.value();
+            }           
             break; 
 
         case PORT: 
@@ -95,156 +88,27 @@ void appConfig::fill_config(std::pair <std::string,std::string> &pair)
         default:
             break;     
     }
+
+    return 0;
 }
 
-bool appConfig::IPv4_fromString(const std::string &str)
+void appConfig::print_IP()
 {
-    memset(ipv4, 0, sizeof(ipv4));
-
-    std::istringstream iss(str);
-    std::vector<std::string> tokens;
-    std::string token;
-
-    for(unsigned char i = 0; std::getline(iss, token, '.'); i++)
-    {
-        if (!token.empty())
-            tokens.push_back(token);                    
-    }
-
-    for(unsigned j = 0; j < 4; j++)
-        ipv4[j] = std::stoi(tokens[j]);
-
-    return false;
+    if(ip.is_v4())
+        std::cout << ip.to_string();
+    if(ip.is_v6())
+        std::cout << "[" << ip.to_string() << "]";
 }
 
-bool appConfig::IPv6_fromString(const std::string &str)
+void appConfig::print_IPandPort()
 {
-    unsigned short accumulator = 0;
-    unsigned char  colon_count = 0;
-    unsigned char  pos = 0; 
-
-    memset(ipv6, 0, sizeof(ipv6));   
-
-    // Step 1: look for position of ::, and count colons after it
-    for(unsigned char i = 1; i <= MAX_IPV6_ADDRESS_STR_LEN; i++) 
-    {
-        if (str[i] == ':') 
-        {
-            if (str[i-1] == ':') 
-            {
-                // Double colon!
-                colon_count = 7;
-            } 
-            else
-            {
-                if(!colon_count)
-                    colon_count--;
-            }               
-                
-        } 
-        else 
-        if (str[i] == '\0') 
-        {
-            break;
-        }
-    }
-
-    // Step 2: convert from ascii to binary
-    for(unsigned char i = 0; i <= MAX_IPV6_ADDRESS_STR_LEN && pos < 8; i++) 
-    {
-        if (str[i] == ':' || str[i] == '\0') 
-        {
-            ipv6[pos] = accumulator;
-            accumulator = 0;
-
-            if (colon_count && i && str[i-1] == ':') 
-            {
-                pos = colon_count;
-            } 
-            else 
-            {
-                pos++;
-            }
-        } 
-        else 
-        {
-            char val = asciiToHex(str[i]);
-
-            if (val == -1) 
-            {
-                // Not hex or colon: fail
-                return false;
-            } 
-            else 
-            {
-                accumulator <<= 4;
-                accumulator |= val;
-            }
-        }
-
-        if (str[i] == '\0')
-            break;
-    }
-
-    // Success
-    return true;
+    if(ip.is_v4())
+        std::cout << ip.to_string() << ":" << std::dec << port;
+    if(ip.is_v6())
+        std::cout << "[" << ip.to_string() << "]:" << std::dec << port;
 }
 
-void appConfig::print_IPv4() const
+void appConfig::print_Port()
 {
-    for(unsigned i = 0; i < 4; i++)
-    {
-        std::cout << (int)ipv4[i];
-
-        if(i < 3)
-            std::cout << ".";
-    }
-
-    if(port != 0xffff)
-        std::cout << ":" << (int)port;
-}
-
-void appConfig::print_IPv6() const
-{
-    bool leading_zeroes = false;
-    std::cout << "[";
-    for(unsigned i = 0; i < 8; i++)
-    {
-        if(ipv6[i] == 0)
-        {
-            std::cout << "";
-            leading_zeroes = true;
-        }
-        else
-        {
-            if(leading_zeroes)
-            {
-                std::cout << ":";
-                leading_zeroes = false;
-            }
-            std::cout << std::hex << ipv6[i];
-        }            
-
-        if(i < 7 && !leading_zeroes)
-            std::cout << ":";
-    }
-    std::cout << "]";
-
-    if(port != 0xffff)
-        std::cout << ":" << std::dec << (int)port;
-}
-
-std::string appConfig::get_IPv4()
-{
-    std::string s;
-
-    for(int i = 0; i < 4; ++i) 
-    {
-        s += std::to_string(ipv4[i]);
-
-        if(i != 4 - 1)
-            s += '.';
-    }
-
-    return s;
+    std::cout << ":" << std::dec << port;
 }

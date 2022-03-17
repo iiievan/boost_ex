@@ -8,7 +8,4 @@
 #include "server.h"
 #include "parcer.h"
 
-extern int create_active_tcp_socket(e_ipVersion ip_version);
-extern int create_active_udp_socket(e_ipVersion ip_version);
-
 #endif //__MAIN_H
