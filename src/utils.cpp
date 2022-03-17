@@ -20,7 +20,7 @@ char asciiToHex(char c)
 }
 
 
-int create_active_tcp_socket(const appConfig& cfg)
+boost::asio::ip::tcp::socket create_active_tcp_socket(const appConfig& cfg)
 {
     boost::asio::io_service ios;
     boost::asio::ip::tcp::socket sock(ios);
@@ -36,11 +36,10 @@ int create_active_tcp_socket(const appConfig& cfg)
 
     BOOST_ERROR_AND_MSG_PROCESSING(ec, "Filed to open socket! Error code = ");
 
-    return ec.value();
-    
+    return sock;    
 }
 
-int create_active_udp_socket(const appConfig& cfg)
+boost::asio::ip::udp::socket create_active_udp_socket(const appConfig& cfg)
 {
     boost::asio::io_service ios;
     boost::asio::ip::udp::socket sock(ios);
@@ -56,7 +55,7 @@ int create_active_udp_socket(const appConfig& cfg)
 
     BOOST_ERROR_AND_MSG_PROCESSING(ec, "Filed to open socket! Error code = ");
 
-    return ec.value();
+    return sock;
     
 }
 

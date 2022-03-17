@@ -15,11 +15,10 @@ class appConfig;
 #define BOOST_ERROR_AND_MSG_PROCESSING(ec, msg)  if(ec)\
                                                 {\
                                                     std::cout << msg << ec.value() << "Message:" <<ec.message() << std::endl;\
-                                                    return ec.value();\
                                                 }
 
 extern char asciiToHex(char c);
-extern  int create_active_tcp_socket(const appConfig& cfg);
-extern  int create_active_udp_socket(const appConfig& cfg);
+extern  boost::asio::ip::tcp::socket create_active_tcp_socket(const appConfig& cfg);
+extern  boost::asio::ip::udp::socket create_active_udp_socket(const appConfig& cfg);
 
 #endif //__UTILS_H

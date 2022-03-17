@@ -7,22 +7,14 @@
 
 namespace Client
 {
-    const boost::asio::ip::tcp::endpoint&  create_tcp_endpoint(const appConfig& cfg)
+    boost::asio::ip::tcp::endpoint create_tcp_endpoint(const appConfig& cfg)
     {   
-        const boost::asio::ip::tcp::endpoint *ep = nullptr;
-
-        ep = new boost::asio::ip::tcp::endpoint(cfg.ip, cfg.port);
-
-        return *ep;
+        return boost::asio::ip::tcp::endpoint(cfg.ip, cfg.port);
     }  
 
-    const boost::asio::ip::udp::endpoint&  create_udp_endpoint(const appConfig& cfg)
+    boost::asio::ip::udp::endpoint create_udp_endpoint(const appConfig& cfg)
     {   
-        const boost::asio::ip::udp::endpoint *ep = nullptr;
-
-        ep = new boost::asio::ip::udp::endpoint(cfg.ip, cfg.port);
-
-        return *ep;
+       return boost::asio::ip::udp::endpoint(cfg.ip, cfg.port);
     }    
 } // namespace Client
 
