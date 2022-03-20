@@ -6,39 +6,29 @@
 #include "utils.h"
 #include "parcer.h"
 
-namespace Server
+class Server
 {
-    boost::asio::ip::tcp::endpoint  create_tcp_endpoint(const appConfig& cfg)
-    {   
-        return boost::asio::ip::tcp::endpoint(cfg.ip, cfg.port); 
-    } 
+public:
+                                    Server(appConfig& cfg);
+                                    ~Server();
 
-    boost::asio::ip::udp::endpoint  create_udp_endpoint(const appConfig& cfg)
-    {   
-        return boost::asio::ip::udp::endpoint(cfg.ip, cfg.port);
-    }  
+    boost::asio::ip::tcp::endpoint& create_tcp_endpoint();
+    boost::asio::ip::udp::endpoint& create_udp_endpoint();
+    boost::asio::ip::tcp::acceptor& create_acceptor();      // meaning tcp acceptor
+                               void create_active_tcp_socket();
+                               void create_active_udp_socket();
 
-    boost::asio::ip::tcp::acceptor  create_tcp_acceptor(const appConfig& cfg)
-    {   
-        boost::asio::io_service ios;
-        boost::asio::ip::tcp::acceptor acceptor(ios);
-        boost::system::error_code ec;
-        
-        boost::asio::ip::tcp protocol_v4 = boost::asio::ip::tcp::v4();
-        boost::asio::ip::tcp protocol_v6 = boost::asio::ip::tcp::v6();
+private:
+                         appConfig &s_Cfg_;
+           boost::asio::io_service ios_;
+         boost::system::error_code ec_;
 
-        if(cfg.ip.is_v4())
-            acceptor.open(protocol_v4, ec);
-        else
-        if(cfg.ip.is_v6())
-            acceptor.open(protocol_v6, ec);
-        else
-        { std::cerr << "Wrong IP config!.\n"; }  
+      boost::asio::ip::tcp::socket *tcp_socket_;
+    boost::asio::ip::tcp::acceptor *acceptor_;
+    boost::asio::ip::tcp::endpoint *tcp_ep_;
 
-        BOOST_ERROR_AND_MSG_PROCESSING(ec, "Failed to open the acceptor socket! Error code =");
-
-        return acceptor; 
-    } 
-} // namespace Server
+      boost::asio::ip::udp::socket *udp_socket_;
+    boost::asio::ip::udp::endpoint *udp_ep_; 
+};
 
 #endif //__SERVER_H
