@@ -3,7 +3,7 @@
 
 int main(int argc, char* argv[])
 {
-          appConfig app_cfg("config");
+          appConfig app_cfg("../config");
              Server srv(app_cfg);
              Client cli(app_cfg);
 

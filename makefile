@@ -16,6 +16,10 @@ LIBS   	   := -pthread -lboost_system
 OBJECTS    := $(patsubst %.cpp,$(OBJ_DIR)/%.o,$(SOURCES))
 EXEC_FILES := $(EXEC_NAME:%=$(BIN_DIR)/%)
 
+all:$(EXEC_FILES)
+
+debug: CFLAGS += -Wextra
+debug: $(BIN_DIR)/$(EXEC_FILES)
 
 $(EXEC_FILES): buildrepo $(OBJECTS) 
 	$(CC) $(OBJECTS) $(CFLAGS) $(LIBS) -o $@
@@ -23,7 +27,7 @@ $(EXEC_FILES): buildrepo $(OBJECTS)
 $(OBJ_DIR)/%.o: %.cpp
 	$(CC) $(CFLAGS) $(DFLAGS) $(CPPFLAGS) $< -o $@
 
-.PHONY : clean
+.PHONY : clean debug
 clean:
 	rm -Rf $(BIN_DIR) $(OBJ_DIR)
 

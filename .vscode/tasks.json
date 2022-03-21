@@ -7,11 +7,7 @@
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
-                "${file}",
-                "-I",
-                "${workspaceFolder}/src",
-                "-I",
-                "${workspaceFolder}/src/client",
+                "${workspaceFolder}/*.cpp",
                 "-o",
                 "${workspaceFolder}/${fileBasenameNoExtension}"
             ],

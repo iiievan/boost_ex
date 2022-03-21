@@ -1,8 +1,8 @@
 # File: config file
-CONFIG_SW_SERVER              = y
-#CONFIG_SW_CLIENT             = y
-#CONFIG_IP                    = 192.168.0.94
-CONFIG_IP                     = 1FFF:0:A88:85A3::AC1F
+#CONFIG_SW_SERVER              = y
+CONFIG_SW_CLIENT              = y
+CONFIG_IP                     = 192.168.0.94
+#CONFIG_IP                     = 1FFF:0:A88:85A3::AC1F
 CONFIG_PORT                   = 2009
 CONFIG_CHAT_SERVER            = y
 #CONFIG_WEB_SERVER      is not set
