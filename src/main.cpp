@@ -5,6 +5,7 @@ int main(int argc, char* argv[])
 {
           appConfig app_cfg("config");
              Server srv(app_cfg);
+             Client cli(app_cfg);
 
     switch(app_cfg.sw_type)
     {
@@ -22,19 +23,19 @@ int main(int argc, char* argv[])
             std::cerr << "Couldn't open config file for reading.\n"; 
             return -1;
             break;
-    } 
-
-    boost::asio::ip::tcp::endpoint *ep   = new boost::asio::ip::tcp::endpoint();    
+    }     
 
     switch (app_cfg.sw_type)
     {
         case SERVER:
-            *ep = srv.create_tcp_endpoint();
-            srv.create_active_tcp_socket(); // and open it
+            srv.accept();
+            srv.read();
+            srv.write();
             break;
         case CLIENT:
-            *ep = Client::create_tcp_endpoint(app_cfg);
-            //*socket = create_active_tcp_socket(app_cfg); // and open it
+            cli.connect_tcp_socket();
+            cli.write("hello");
+            cli.read();
             break;
         case NA:
         default:

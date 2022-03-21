@@ -1,21 +1,20 @@
-#include "server.h"
+#include"client.h"
 
-Server::Server(appConfig& cfg)
+Client::Client(appConfig& cfg)
 :s_Cfg_(cfg)
 {
       tcp_socket_ = nullptr;
-        acceptor_ = nullptr; 
       udp_socket_ = nullptr;
           tcp_ep_ = nullptr; 
           udp_ep_ = nullptr;
 }
 
-Server::~Server()
+Client::~Client()
 {
 
 }
 
-boost::asio::ip::tcp::endpoint& Server::create_tcp_endpoint()
+boost::asio::ip::tcp::endpoint& Client::create_tcp_endpoint()
 {
     if(tcp_ep_ == nullptr)
         tcp_ep_ = new boost::asio::ip::tcp::endpoint(s_Cfg_.ip, s_Cfg_.port); 
@@ -23,7 +22,7 @@ boost::asio::ip::tcp::endpoint& Server::create_tcp_endpoint()
     return *tcp_ep_;
 }
 
-boost::asio::ip::udp::endpoint& Server::create_udp_endpoint()
+boost::asio::ip::udp::endpoint& Client::create_udp_endpoint()
 {
     if(udp_ep_ == nullptr)
         udp_ep_ = new boost::asio::ip::udp::endpoint(s_Cfg_.ip, s_Cfg_.port); 
@@ -31,25 +30,7 @@ boost::asio::ip::udp::endpoint& Server::create_udp_endpoint()
     return *udp_ep_;
 }
 
-boost::asio::ip::tcp::acceptor& Server::create_acceptor()
-{
-    if(acceptor_ == nullptr)
-        acceptor_ = new boost::asio::ip::tcp::acceptor(ios_);
-
-    if(s_Cfg_.ip.is_v4())
-        acceptor_->open(boost::asio::ip::tcp::v4(), ec_);
-    else
-    if(s_Cfg_.ip.is_v6())
-        acceptor_->open(boost::asio::ip::tcp::v6(), ec_);
-    else
-        std::cerr << "Wrong IP config!.\n";
-
-    BOOST_ERROR_AND_MSG_PROCESSING(ec_, "Failed to open the acceptor socket! Error code =");
-
-    return *acceptor_; 
-}
-
-void Server::create_active_tcp_socket()
+void Client::open_active_tcp_socket()
 {
     if(tcp_socket_ == nullptr)
         tcp_socket_ = new boost::asio::ip::tcp::socket(ios_);
@@ -66,7 +47,7 @@ void Server::create_active_tcp_socket()
 
 }
 
-void Server::create_active_udp_socket()
+void Client::open_active_udp_socket()
 {
     if(udp_socket_ == nullptr)
         udp_socket_ = new boost::asio::ip::udp::socket(ios_);
@@ -82,36 +63,40 @@ void Server::create_active_udp_socket()
     BOOST_ERROR_AND_MSG_PROCESSING(ec_, "Filed to open socket! Error code = ");
 }
 
-void Server::accept()
+int Client::connect_tcp_socket()
 {
     if(tcp_socket_ == nullptr)
         tcp_socket_ = new boost::asio::ip::tcp::socket(ios_);
 
     create_tcp_endpoint();
 
-    if(acceptor_ == nullptr)
-        acceptor_ = new boost::asio::ip::tcp::acceptor(ios_,tcp_ep_);
-
-    acceptor_->accept(*tcp_socket_);
-}
-
-int Server::read()
-{
-    boost::asio::read_until(*tcp_socket_, receive_buffer_, "\n", ec_);
+    tcp_socket_->connect(*tcp_ep_,ec_);
 
     BOOST_ERROR_PROCESSING(ec_);
 
     return 0;
 }
 
-int Server::write()  
+int Client::write(const std::string msg)
 {
-    // write data back
-    std::string data = boost::asio::buffer_cast<const char*>(receive_buffer_.data());
-
-    boost::asio::write(*tcp_socket_, boost::asio::buffer(data), ec_);
+    boost::asio::write(*tcp_socket_, boost::asio::buffer(msg), ec_);
 
     BOOST_ERROR_PROCESSING(ec_);
 
     return 0;
-} 
+}
+
+void Client::read()
+{
+    boost::asio::read(*tcp_socket_,receive_buffer_,boost::asio::transfer_all(), ec_);
+
+    if(ec_ && ec_ != boost::asio::error::eof)
+    {
+        std::cout<< "receive failed " << ec_.message() << std::endl;
+    }
+    else
+    {
+        const char * data = boost::asio::buffer_cast<const char *>(receive_buffer_.data());
+        std::cout << data << std::endl;
+    }
+}

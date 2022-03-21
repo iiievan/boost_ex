@@ -14,9 +14,13 @@ public:
 
     boost::asio::ip::tcp::endpoint& create_tcp_endpoint();
     boost::asio::ip::udp::endpoint& create_udp_endpoint();
-    boost::asio::ip::tcp::acceptor& create_acceptor();      // meaning tcp acceptor
                                void create_active_tcp_socket();
                                void create_active_udp_socket();
+    boost::asio::ip::tcp::acceptor& create_acceptor();
+
+                               void accept();
+                                int read();
+                                int write();      
 
 private:
                          appConfig &s_Cfg_;
@@ -29,6 +33,8 @@ private:
 
       boost::asio::ip::udp::socket *udp_socket_;
     boost::asio::ip::udp::endpoint *udp_ep_; 
+
+            boost::asio::streambuf receive_buffer_;
 };
 
 #endif //__SERVER_H
