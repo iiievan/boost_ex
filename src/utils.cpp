@@ -19,43 +19,29 @@ char asciiToHex(char c)
     }
 }
 
-
-boost::asio::ip::tcp::socket create_active_tcp_socket(const appConfig& cfg)
+std::string get_config_path(const std::string& cfg_filename)
 {
-    boost::asio::io_service ios;
-    boost::asio::ip::tcp::socket sock(ios);
-    boost::system::error_code ec;
+	std::string execution_path = boost::dll::program_location().string();
+	std::string       progname = boost::dll::program_location().filename().string();
+	std::string    config_path = (execution_path - progname);
 
-    if(cfg.ip.is_v4())
-        sock.open(boost::asio::ip::tcp::v4(), ec);
-    else
-    if(cfg.ip.is_v6())
-        sock.open(boost::asio::ip::tcp::v6(), ec);
-    else
-    { std::cerr << "Wrong IP config!.\n"; }
+	config_path = config_path - "bin/";
+	config_path = config_path + cfg_filename;
 
-    BOOST_ERROR_AND_MSG_PROCESSING(ec, "Filed to open socket! Error code = ");
-
-    return sock;    
+	return config_path;
 }
 
-boost::asio::ip::udp::socket create_active_udp_socket(const appConfig& cfg)
+std::string operator-(std::string source, const std::string& target)
 {
-    boost::asio::io_service ios;
-    boost::asio::ip::udp::socket sock(ios);
-    boost::system::error_code ec;
+    for (size_t pos, size{ target.size() }; (pos = source.find(target)) != std::string::npos; )
+    {
+        source.erase(source.cbegin() + pos,
+        		     source.cbegin() + (pos + size));
+    }
 
-    if(cfg.ip.is_v4())
-        sock.open(boost::asio::ip::udp::v4(), ec);
-    else
-    if(cfg.ip.is_v6())
-        sock.open(boost::asio::ip::udp::v6(), ec);
-    else
-    { std::cerr << "Wrong IP config!.\n"; }
-
-    BOOST_ERROR_AND_MSG_PROCESSING(ec, "Filed to open socket! Error code = ");
-
-    return sock;
-    
+    return source;
 }
+
+
+
 

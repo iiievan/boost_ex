@@ -4,6 +4,15 @@
 class appConfig;
 #include <string>
 #include "parcer.h"
+#include <boost/dll.hpp>
+
+#ifdef WINDOWS
+    #include <direct.h>
+    #define GetCurrentDir _getcwd
+#else
+    #include <unistd.h>
+    #define GetCurrentDir getcwd
+ #endif
 
 #define MAX_IPV6_ADDRESS_STR_LEN  (39)
 #define BOOST_ERROR_PROCESSING(ec)  if(ec)\
@@ -18,7 +27,7 @@ class appConfig;
                                                 }
 
 extern char asciiToHex(char c);
-extern  boost::asio::ip::tcp::socket create_active_tcp_socket(const appConfig& cfg);
-extern  boost::asio::ip::udp::socket create_active_udp_socket(const appConfig& cfg);
+extern std::string get_config_path(const std::string& cfg_filename);
+extern std::string operator-(std::string source, const std::string& target);
 
 #endif //__UTILS_H

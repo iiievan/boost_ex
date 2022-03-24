@@ -1,5 +1,6 @@
 #include "parcer.h"
 
+
 appConfig::appConfig(const char* fname)
 {
     _configMap = boost::assign::map_list_of("CONFIG_SW_SERVER",     SW_SERVER)
@@ -10,6 +11,7 @@ appConfig::appConfig(const char* fname)
                                            ("CONFIG_WEB_SERVER",    WEB_SERVER)
                                            ("CONFIG_EMAIL_SERVER",  EMAIL_SERVER)
                                            ("CONFIG_CRYPTOCURRENCY",CRYPTOCURRENCY);
+
     std::ifstream cFile(fname);
 
     if (cFile.is_open())

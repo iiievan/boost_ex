@@ -12,14 +12,14 @@ SOURCES    := $(wildcard $(addsuffix /*.cpp,$(SUBDIRS)))
 CC     	   := g++
 CFLAGS     := -g -Wall #-O2
 CPPFLAGS   := -c -std=c++0x $(INCLUDES) 
-LIBS   	   := -pthread -lboost_system
+LIBS   	   := -pthread -lboost_system -lboost_filesystem
 OBJECTS    := $(patsubst %.cpp,$(OBJ_DIR)/%.o,$(SOURCES))
 EXEC_FILES := $(EXEC_NAME:%=$(BIN_DIR)/%)
 
 all:$(EXEC_FILES)
 
 debug: CFLAGS += -Wextra
-debug: $(BIN_DIR)/$(EXEC_FILES)
+debug: $(EXEC_FILES)
 
 $(EXEC_FILES): buildrepo $(OBJECTS) 
 	$(CC) $(OBJECTS) $(CFLAGS) $(LIBS) -o $@

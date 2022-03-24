@@ -3,9 +3,11 @@
 
 int main(int argc, char* argv[])
 {
-          appConfig app_cfg("../config");
-             Server srv(app_cfg);
-             Client cli(app_cfg);
+	std::string config_path = get_config_path("config");
+
+      appConfig app_cfg(config_path.c_str());
+         Server srv(app_cfg);
+         Client cli(app_cfg);
 
     switch(app_cfg.sw_type)
     {
