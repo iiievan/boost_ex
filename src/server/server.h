@@ -2,6 +2,9 @@
 #define __SERVER_H
 
 #include <iostream>
+#include <cstdlib>
+#include <memory>
+#include <utility>
 #include <boost/asio.hpp>
 #include "utils.h"
 #include "parcer.h"
@@ -9,32 +12,25 @@
 class Server
 {
 public:
-                                    Server(appConfig& cfg);
-                                    ~Server();
+                                   Server(boost::asio::io_service& ios, appConfig& cfg);
 
-    boost::asio::ip::tcp::endpoint& create_tcp_endpoint();
-    boost::asio::ip::udp::endpoint& create_udp_endpoint();
-                               void create_active_tcp_socket();
-                               void create_active_udp_socket();
-    boost::asio::ip::tcp::acceptor& create_acceptor();
+                              void accept();
+                              void open_socket();     // active socket
+                              void open_acceptor();   // passive socket
 
-                               void accept();
-                                int read();
-                                int write();      
-
+                               int read();    
+                               int write();
 private:
+
                          appConfig &s_Cfg_;
-           boost::asio::io_service ios_;
-         boost::system::error_code ec_;
+         boost::system::error_code  ec_;
 
-      boost::asio::ip::tcp::socket *tcp_socket_;
-    boost::asio::ip::tcp::acceptor *acceptor_;
-    boost::asio::ip::tcp::endpoint *tcp_ep_;
+           boost::asio::io_service &ios_;
+    boost::asio::ip::tcp::acceptor  acceptor_;
+      boost::asio::ip::tcp::socket  tcp_socket_;
 
-      boost::asio::ip::udp::socket *udp_socket_;
-    boost::asio::ip::udp::endpoint *udp_ep_; 
-
-            boost::asio::streambuf receive_buffer_;
+            boost::asio::streambuf  receive_buffer_;
+                       std::string  data_;
 };
 
 #endif //__SERVER_H

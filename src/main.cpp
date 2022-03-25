@@ -4,9 +4,10 @@
 int main(int argc, char* argv[])
 {
 	std::string config_path = get_config_path("config");
-
+    boost::asio::io_service io_service;
+    
       appConfig app_cfg(config_path.c_str());
-         Server srv(app_cfg);
+         Server srv(io_service, app_cfg);
          Client cli(app_cfg);
 
     switch(app_cfg.sw_type)
