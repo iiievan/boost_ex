@@ -26,11 +26,10 @@ private:
          boost::system::error_code  ec_;
 
            boost::asio::io_service &ios_;
-    boost::asio::ip::tcp::acceptor  acceptor_;
-      boost::asio::ip::tcp::socket  tcp_socket_;
-
-            boost::asio::streambuf  receive_buffer_;
-                       std::string  data_;
+           	      boost::asio::ip::tcp::acceptor  acceptor_;
+   std::shared_ptr<boost::asio::ip::tcp::socket>  tcp_socket_;
+                          boost::asio::streambuf  receive_buffer_;
+                                     std::string  data_;
 };
 
 #endif //__SERVER_H

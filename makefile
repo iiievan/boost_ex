@@ -9,23 +9,23 @@ SUBDIRS    := $(wildcard $(SRC_DIR) $(CLI_DIR) $(SRV_DIR))
 INCLUDES   := $(addprefix -I,$(SUBDIRS))
 SOURCES    := $(wildcard $(addsuffix /*.cpp,$(SUBDIRS)))
 
-CC     	   := g++
-CFLAGS     := -g -Wall #-O2
-CPPFLAGS   := -c -std=c++0x $(INCLUDES) 
-LIBS   	   := -pthread -lboost_system -lboost_filesystem
+CXX    	   := g++
+STD        := -std=c++11
+CXXFLAGS   := -g $(STD) -Wall -ldl -pedantic #-O2
+CPPFLAGS   := -c $(STD) $(INCLUDES) 
+LIBS   	   := -lboost_filesystem -lboost_system -pthread
 OBJECTS    := $(patsubst %.cpp,$(OBJ_DIR)/%.o,$(SOURCES))
 EXEC_FILES := $(EXEC_NAME:%=$(BIN_DIR)/%)
 
 all:$(EXEC_FILES)
 
-debug: CFLAGS += -Wextra
 debug: $(EXEC_FILES)
 
 $(EXEC_FILES): buildrepo $(OBJECTS) 
-	$(CC) $(OBJECTS) $(CFLAGS) $(LIBS) -o $@
+	$(CXX) $(OBJECTS) $(CXXFLAGS) $(LIBS) -o $@
 
 $(OBJ_DIR)/%.o: %.cpp
-	$(CC) $(CFLAGS) $(DFLAGS) $(CPPFLAGS) $< -o $@
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 .PHONY : clean debug
 clean:
