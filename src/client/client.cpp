@@ -28,11 +28,10 @@ void Client::open_socket()
 
 int Client::write(const std::string msg)
 {
+	std::string message = msg + '\n';
 	std::printf("Sending message: %s\n", msg.c_str());
 
-	msg = msg + '\n';
-
-    boost::asio::write(*tcp_socket_, boost::asio::buffer(msg), ec_);
+    boost::asio::write(*tcp_socket_, boost::asio::buffer(message), ec_);
 
     BOOST_ERROR_PROCESSING(ec_);
 

@@ -67,7 +67,12 @@ int Server::write()
 {
     data_ = boost::asio::buffer_cast<const char*>(receive_buffer_.data());
     
-    data_ = data_ + "from rpiserver";
+    // remove \n
+    if (data_.size () > 0)
+        data_.erase(data_.size () - 1);
+
+    data_ = data_ + " from rpiserver";
+
     std::cout << data_ << std::endl;
 
     boost::asio::write(*tcp_socket_, boost::asio::buffer(data_), ec_);
