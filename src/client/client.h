@@ -8,31 +8,22 @@
 class Client
 {
 public:
-                                    Client(appConfig& cfg);
-                                    ~Client();
+                                    Client(boost::asio::io_service& ios, appConfig& cfg);
 
-    boost::asio::ip::tcp::endpoint& create_tcp_endpoint();
-    boost::asio::ip::udp::endpoint& create_udp_endpoint();
-                               void open_active_tcp_socket();
-                               void open_active_udp_socket();
+                               void connect_socket();
+                               void open_socket();
 
-                                int connect_tcp_socket();
                                 int write(const std::string msg);
                                void read();
 
-
 private:
-                         appConfig &s_Cfg_;
-           boost::asio::io_service ios_;
-         boost::system::error_code ec_;
+                                     appConfig &s_Cfg_;
+                     boost::system::error_code  ec_;
 
-      boost::asio::ip::tcp::socket *tcp_socket_;
-    boost::asio::ip::tcp::endpoint *tcp_ep_;
-
-      boost::asio::ip::udp::socket *udp_socket_;
-    boost::asio::ip::udp::endpoint *udp_ep_; 
-
-            boost::asio::streambuf receive_buffer_;
+                       boost::asio::io_service &ios_;
+ std::shared_ptr<boost::asio::ip::tcp::socket>  tcp_socket_;
+                        boost::asio::streambuf  receive_buffer_;
+                                   std::string  data_;
 };
 
 #endif //__CLIENT_H

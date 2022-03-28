@@ -4,11 +4,12 @@
 int main(int argc, char* argv[])
 {
 	std::string config_path = get_config_path("config");
-    boost::asio::io_service io_service;
+    boost::asio::io_service server_ios;
+    boost::asio::io_service client_ios;
     
       appConfig app_cfg(config_path.c_str());
-         Server srv(io_service, app_cfg);
-         Client cli(app_cfg);
+         Server srv(server_ios, app_cfg);
+         Client cli(client_ios, app_cfg);
 
     switch(app_cfg.sw_type)
     {
@@ -36,7 +37,7 @@ int main(int argc, char* argv[])
             srv.write();
             break;
         case CLIENT:
-            cli.connect_tcp_socket();
+            cli.connect_socket();
             cli.write("hello");
             cli.read();
             break;
