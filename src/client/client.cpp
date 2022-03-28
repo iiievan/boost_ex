@@ -30,6 +30,8 @@ int Client::write(const std::string msg)
 {
 	std::printf("Sending message: %s\n", msg.c_str());
 
+	msg = msg + '\n';
+
     boost::asio::write(*tcp_socket_, boost::asio::buffer(msg), ec_);
 
     BOOST_ERROR_PROCESSING(ec_);
@@ -48,6 +50,8 @@ void Client::read()
     else
     {
         const char * data = boost::asio::buffer_cast<const char *>(receive_buffer_.data());
+
+        std::cout <<"Server: ";
         std::cout << data << std::endl;
     }
 }
