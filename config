@@ -1,5 +1,6 @@
 # File: config file
 #CONFIG_SW_SERVER              = y
+CONFIG_SERVER_NAME            = rpiserver
 CONFIG_SW_CLIENT              = y
 CONFIG_IP                     = 192.168.0.94
 #CONFIG_IP                     = 1FFF:0:A88:85A3::AC1F

@@ -58,6 +58,7 @@ public:
   void print_IPandPort();
 
                 e_swType sw_type     = NA;
+             std::string server_name;
 boost::asio::ip::address ip;
           unsigned short port        =  65535;
             e_appPurpose app_purpose = APP_NA;

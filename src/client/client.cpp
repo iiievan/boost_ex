@@ -8,6 +8,30 @@ Client::Client(boost::asio::io_service& ios, appConfig& cfg)
     std::cout << "Client: init." << std::endl;
 }
 
+void Client::find_server()
+{
+    boost::asio::ip::tcp::resolver::query resolver_query("rpiserver", 
+                                                         "2009",boost::asio::ip::tcp::resolver::query::numeric_service);  // for quick resolve
+
+    boost::asio::ip::tcp::resolver resolver(ios_);
+
+    boost::asio::ip::tcp::resolver::iterator it = resolver.resolve(resolver_query, ec_);
+
+    BOOST_ERROR_AND_MSG_PROCESSING(ec_, "Filed to resolve server name! Error code = ");
+
+    if(ec_)
+        return;
+
+    boost::asio::ip::tcp::resolver::iterator it_end;
+
+    // print all finded endpoints of the collection
+    while (it != it_end)
+    {
+        boost::asio::ip::tcp::endpoint endpoint = *it++;
+        std::cout << endpoint << std::endl;
+    }    
+}
+
 void Client::connect_socket()
 {
     boost::asio::ip::tcp::endpoint endpoint(s_Cfg_.ip, s_Cfg_.port);
@@ -32,9 +56,10 @@ void Client::close_socket()
     {
         tcp_socket_->close();
         
-        // пока обработчики, ожидающие завершения, не вызываюто операций над tcp_socket_
-        // уничтожаем его
-        tcp_socket_->release(nullptr);
+        // As long as outstanding completion handlers do not
+        // invoke operations on tcp_socket_, then tcp_socket_ can be 
+        // destroyed.
+        tcp_socket_->release();
     });
 }
 

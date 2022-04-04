@@ -40,9 +40,10 @@ void Server::close_socket()
     {
         tcp_socket_->close();
         
-        // пока обработчики, ожидающие завершения, не вызываюто операций над tcp_socket_
-        // уничтожаем его
-        tcp_socket_->release(nullptr);
+        // As long as outstanding completion handlers do not
+        // invoke operations on tcp_socket_, then tcp_socket_ can be 
+        // destroyed.
+        tcp_socket_->release();
     });
 }
 

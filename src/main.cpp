@@ -37,6 +37,7 @@ int main(int argc, char* argv[])
             srv.write();
             break;
         case CLIENT:
+            cli.find_server();
             cli.connect_socket();
             cli.write("hello");
             cli.read();
