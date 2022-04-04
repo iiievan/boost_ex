@@ -5,6 +5,7 @@ appConfig::appConfig(const char* fname)
 {
     _configMap = boost::assign::map_list_of("CONFIG_SW_SERVER",     SW_SERVER)
                                            ("CONFIG_SW_CLIENT",     SW_CLIENT)
+                                           ("CONFIG_SERVER_NAME",   SERVER_NAME)
                                            ("CONFIG_IP",            IP)
                                            ("CONFIG_PORT",          PORT)
                                            ("CONFIG_CHAT_SERVER",   CHAT_SERVER)
@@ -50,6 +51,10 @@ int appConfig::fill_config(std::pair <std::string,std::string> &pair)
 
         case SW_CLIENT: 
             sw_type = CLIENT;        
+            break; 
+
+        case SERVER_NAME: 
+            server_name = pair.second;        
             break; 
 
         case IP:

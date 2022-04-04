@@ -39,6 +39,7 @@ enum e_config : unsigned int
 {
     SW_SERVER,               
     SW_CLIENT,  
+    SERVER_NAME,
     IP,                      
     PORT,                    
     CHAT_SERVER,             

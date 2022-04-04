@@ -10,8 +10,12 @@ Client::Client(boost::asio::io_service& ios, appConfig& cfg)
 
 void Client::find_server()
 {
-    boost::asio::ip::tcp::resolver::query resolver_query("rpiserver", 
-                                                         "2009",boost::asio::ip::tcp::resolver::query::numeric_service);  // for quick resolve
+    std::string host = s_Cfg_.server_name;
+    std::string port = std::to_string(s_Cfg_.port);
+
+    boost::asio::ip::tcp::resolver::query resolver_query(host, 
+                                                         port ,
+                                                         boost::asio::ip::tcp::resolver::query::numeric_service);  // for quick resolve
 
     boost::asio::ip::tcp::resolver resolver(ios_);
 
