@@ -22,9 +22,9 @@ class appConfig;
                                     }
 
 #define BOOST_ERROR_AND_MSG_PROCESSING(ec, msg)  if(ec)\
-                                                {\
-                                                    std::cout << msg << ec.value() << "Message:" <<ec.message() << std::endl;\
-                                                }
+                                                 {\
+                                                     std::cout << msg << ec.value() << "Message:" <<ec.message() << std::endl;\
+                                                 }
 
 extern char asciiToHex(char c);
 extern std::string get_config_path(const std::string& cfg_filename);

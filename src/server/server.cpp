@@ -34,6 +34,18 @@ void Server::open_socket()
      BOOST_ERROR_AND_MSG_PROCESSING(ec_, "Filed to open socket! Error code = ");
 }
 
+void Server::close_socket()
+{
+    ios_.post([this]() 
+    {
+        tcp_socket_->close();
+        
+        // пока обработчики, ожидающие завершения, не вызываюто операций над tcp_socket_
+        // уничтожаем его
+        tcp_socket_->release(nullptr);
+    });
+}
+
 void Server::accept()
 {
     std::cout << "Acceptor: accept!" << std::endl;

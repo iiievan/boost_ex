@@ -8,13 +8,15 @@
 class Client
 {
 public:
-                                    Client(boost::asio::io_service& ios, appConfig& cfg);
+                                     Client(boost::asio::io_service& ios, appConfig& cfg);
+                                    ~Client() { close_socket(); }
 
-                               void connect_socket();
-                               void open_socket();
-
-                                int write(const std::string msg);
-                               void read();
+                               void  connect_socket();
+                               void  open_socket();
+                               void  close_socket();
+ 
+                                int  write(const std::string msg);
+                               void  read();
 
 private:
                                      appConfig &s_Cfg_;

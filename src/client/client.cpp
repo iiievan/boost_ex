@@ -26,6 +26,18 @@ void Client::open_socket()
     BOOST_ERROR_AND_MSG_PROCESSING(ec_, "Filed to open socket! Error code = ");
 }
 
+void Client::close_socket()
+{
+    ios_.post([this]() 
+    {
+        tcp_socket_->close();
+        
+        // пока обработчики, ожидающие завершения, не вызываюто операций над tcp_socket_
+        // уничтожаем его
+        tcp_socket_->release(nullptr);
+    });
+}
+
 int Client::write(const std::string msg)
 {
 	std::string message = msg + '\n';

@@ -12,14 +12,16 @@
 class Server
 {
 public:
-                                   Server(boost::asio::io_service& ios, appConfig& cfg);
+                                    Server(boost::asio::io_service& ios, appConfig& cfg);
+                                   ~Server() { close_socket(); }
 
-                              void accept();
-                              void open_socket();     // active socket
-                              void open_acceptor();   // passive socket
-
-                               int read();    
-                               int write();
+                              void  accept();
+                              void  open_socket();     // active socket
+                              void  close_socket();     // active socket
+                              void  open_acceptor();   // passive socket
+ 
+                               int  read();    
+                               int  write();
 private:
 
                          appConfig &s_Cfg_;
