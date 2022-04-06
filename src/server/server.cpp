@@ -17,7 +17,10 @@ Server::Server(boost::asio::io_service& ios, appConfig& cfg)
 
     acceptor_.open(endpoint.protocol());
     acceptor_.set_option(boost::asio::ip::tcp::acceptor::reuse_address(true));
-    acceptor_.bind(endpoint);
+    acceptor_.bind(endpoint,ec_);
+
+    BOOST_ERROR_AND_MSG_PROCESSING(ec_, "Filed to bind socket! Error code = ");
+
     acceptor_.listen();
 }
 

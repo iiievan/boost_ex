@@ -17,7 +17,7 @@ public:
 
                               void  accept();
                               void  open_socket();     // active socket
-                              void  close_socket();     // active socket
+                              void  close_socket();    // active socket
                               void  open_acceptor();   // passive socket
  
                                int  read();    

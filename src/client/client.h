@@ -28,6 +28,8 @@ std::shared_ptr<boost::asio::ip::tcp::endpoint>  server_endpoint;
   std::shared_ptr<boost::asio::ip::tcp::socket>  tcp_socket_;
                          boost::asio::streambuf  receive_buffer_;
                                     std::string  data_;
+                                    
+       boost::asio::ip::tcp::resolver::iterator  resolve_iter_;
 };
 
 #endif //__CLIENT_H
