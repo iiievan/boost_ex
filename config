@@ -1,10 +1,11 @@
 # File: config file
+
 #CONFIG_SW_SERVER              = y
-CONFIG_SERVER_NAME            = rpiserver.corp.crystal-sound.com
 CONFIG_SW_CLIENT              = y
-CONFIG_IP                     = 192.168.17.17
-#CONFIG_IP                     = 1FFF:0:A88:85A3::AC1F
+CONFIG_SERVER_NAME            = rpiserver.corp.crystal-sound.com
 CONFIG_PORT                   = 2009
+#CONFIG_IP                     = 192.168.17.17
+#CONFIG_IP                     = 1FFF:0:A88:85A3::AC1F
 CONFIG_CHAT_SERVER            = y
 #CONFIG_WEB_SERVER      is not set
 #CONFIG_EMAIL_SERVER    is not set

@@ -3,7 +3,7 @@
 Client::Client(boost::asio::io_service& ios, appConfig& cfg)
 : s_Cfg_(cfg),
   ios_(ios),
-  tcp_socket_(std::make_shared<boost::asio::ip::tcp::socket>(ios_)),
+  tcp_socket_(std::make_shared<boost::asio::ip::tcp::socket>(ios_))
 {
     std::cout << "Client: init." << std::endl;
 }
@@ -38,7 +38,7 @@ void Client::find_server()
     }    
 }
 
-void Client::connect_socket()
+int Client::connect_socket()
 {
     std::string host = s_Cfg_.server_name;
     std::string port = std::to_string(s_Cfg_.port);
@@ -53,11 +53,14 @@ void Client::connect_socket()
     {
         resolve_iter_ = resolver.resolve(resolver_query);
 
-        boost::asio::connect (tcp_socket_,resolve_iter_);
+        boost::asio::connect (*tcp_socket_, resolve_iter_);
     }
     catch(boost::system::system_error &e)
     {
-        BOOST_ERROR_AND_MSG_PROCESSING(e, "Error occured! Error code = ");
+        std::cout << "Error occured! Error code = " << e.code()
+        << " .Message: " << e.what();
+
+        return e.code().value();
     }
     
     /**
@@ -65,6 +68,8 @@ void Client::connect_socket()
     tcp_socket_->connect(endpoint, ec_);
     BOOST_ERROR_AND_MSG_PROCESSING(ec_, "Filed to connect socket! Error code = ");
     **/
+
+   return 0;
 }
 
 void Client::open_socket()

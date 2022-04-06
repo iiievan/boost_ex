@@ -29,5 +29,6 @@ class appConfig;
 extern char asciiToHex(char c);
 extern std::string get_config_path(const std::string& cfg_filename);
 extern std::string operator-(std::string source, const std::string& target);
+extern std::string get_local_ip();
 
 #endif //__UTILS_H

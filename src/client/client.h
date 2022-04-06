@@ -12,7 +12,7 @@ public:
                                     ~Client() { close_socket(); }
 
                                void  find_server();
-                               void  connect_socket();
+                                int  connect_socket();
                                void  open_socket();
                                void  close_socket();
  

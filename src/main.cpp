@@ -11,6 +11,8 @@ int main(int argc, char* argv[])
          Server srv(server_ios, app_cfg);
          Client cli(client_ios, app_cfg);
 
+    app_cfg.ip = boost::asio::ip::address::from_string(get_local_ip());    
+
     switch(app_cfg.sw_type)
     {
         case SERVER:

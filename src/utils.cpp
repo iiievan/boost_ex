@@ -42,6 +42,44 @@ std::string operator-(std::string source, const std::string& target)
     return source;
 }
 
+extern std::string get_local_ip()
+{
+    std::string result = "127.0.0.1";
+
+    std::shared_ptr<boost::asio::ip::udp::socket>  socket;
+
+    std::string endpoint_ip_str = "192.168.0.1";
+    boost::asio::io_service io_service;
+
+    // dotted decimal IP conversion to host byte order
+    auto endpoint_ip    = inet_network(endpoint_ip_str.c_str());
+    auto endpoint_port  = 8000;
+    auto host_port      = 8001; 
+
+    try
+    {  
+        const boost::asio::ip::udp::endpoint endpoint(boost::asio::ip::address_v4(endpoint_ip), endpoint_port);
+        socket = std::make_shared<boost::asio::ip::udp::socket>(io_service, boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(), host_port));
+        socket->connect(endpoint);
+
+        result = socket->local_endpoint().address().to_string();
+        //std::cout << result << std::endl;
+    }
+    catch (std::exception& e)
+    {
+        std::cout << e.what() << std::endl;
+    }
+
+    // close socket
+    io_service.post([&]() 
+    {
+        socket->close();        
+        socket->release();
+    });
+
+    return result;
+}
+
 
 
 
